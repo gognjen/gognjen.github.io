@@ -67,7 +67,7 @@ You have follow above steps again to post again on all groups.Above trick will s
 
     window.fbAsyncInit = function() {
         FB.init({
-            appId: "777029765642866",
+            appId: "Put your App ID here",
             cookie: true, // enable cookies to allow the server to access 
             // the session
             xfbml: true, // parse social plugins on this page
