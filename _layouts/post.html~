@@ -1,6 +1,6 @@
 ---
 layout: default
-disqus: false
+disqus: true
 archive: false
 ---
 
@@ -48,13 +48,13 @@ archive: false
         	<!-- If we want to display author's name and bio -->
             {% if site.author %}
                 <section class="author">
-                	<header> <a href="{{ site.baseurl }}"> <img class="profile" src="/assets/images/profile.png" alt="Author's profile picture"></a></header>
+                	<header> <a href="{{ site.baseurl }}"> <img class="profile" src="https://avatars2.githubusercontent.com/u/3964833?s=100" alt="Author's profile picture"></a></header>
                 	<article>
                 		<!-- Author Name -->
                     	<h4> {{ site.author }} </h4>
                     	<!-- Author Bio -->
                     	<p> 
-                    		Here goes the author description. You might want to place some links too in here
+                    		I'm a freelance software developer, currently living in Banja Luka. I'm <a href="http://twitter.com/gognjen" target="_blank">@gognjen</a> on Twitter. You can hire me. 
                     	</p>
                     </article>
                 </section>                

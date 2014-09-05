@@ -32,7 +32,7 @@ function getMyGroups() {
 
 
 After that you can call this function to post to selected groups. I put this delay variable to introduce a delay
-between two post requests. This may help you to avoid being banned from posting into Facebook groups.
+between two post requests. This may help you to avoid being banned from posting into groups by Facebook.
 
 {% highlight js %}
 function postToGroups() {
@@ -243,4 +243,4 @@ And here is the full working example. First it will load and initialize the Face
 </html>
 {% endhighlight %}
 
-You can you this code as you like or you can download full example from my GitHub repository. If you are facing any problem please share it with me below in comments or send me an email.
+If you are facing any problem please share it with me below in comments or send me an email.

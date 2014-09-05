@@ -7,7 +7,7 @@ disqus: true
 
 I recently started a blog and I figured out that Facebook groups are one of the best places to promote my posts and quicky get some users to my site. If you have a lot of groups and you are already doing the same thing then you know that it takes a lot of time to post to all groups one by one. So I decided to make a simple script to do that in one click using Facebook Javascript SDK and Facebook Graph API.
 
-*Important!* Please don't use this code to spam your Facebook groups. You may be banned for spamming by group admins or temporary blocked by Facebook!
+**Important!** Please don't use this code to spam your Facebook groups. You may be banned for spamming by group admins or temporary blocked by Facebook!
 I guess Facebook will temporary block you from posting to groups if you post to large number of groups in short period of time (I got restricted from posting and joining groups for two weeks while testing this). 
 
 Here is simple explanation of how it works.
@@ -32,7 +32,7 @@ function getMyGroups() {
 
 
 After that you can call this function to post to selected groups. I put this delay variable to introduce a delay
-between two post requests. This may help you to avoid being banned from posting into Facebook groups.
+between two post requests. This may help you to avoid being banned from posting into groups by Facebook.
 
 {% highlight js %}
 function postToGroups() {
