@@ -7,6 +7,8 @@ disqus: true
 
 I recently started a blog and I figured out that Facebook groups are one of the best places to promote my posts and quicky get some users to my site. If you have a lot of groups and you are already doing the same thing then you know that it takes a lot of time to post to all groups one by one. So I decided to make a simple script to do that in one click using Facebook Javascript SDK and Facebook Graph API.
 
+![My helpful screenshot]({{ site.url }}/assets/images/post-to-multiple-facebook-groups.png)
+
 **Important!** Please don't use this code to spam your Facebook groups. You may be banned for spamming by group admins or temporary blocked by Facebook!
 I guess Facebook will temporary block you from posting to groups if you post to large number of groups in short period of time (I got restricted from posting and joining groups for two weeks while testing this). 
 
@@ -230,9 +232,9 @@ And here is the full working example. First it will load and initialize the Face
 <label for="link">Link</label>
 <input type="text" value="" id="link" placeholder="Your link goes here." />
 
+<button type="button" onclick="getMyGroups();">Load Groups</button>
 <label for="groups">Select your groups</label>
 <select multiple id="groups"></select>
-<button type="button" onclick="getMyGroups();">Load Groups</button>
 
 <label for="link">Delay (number of second between requests)</label>
 <input type="text" id="delay" />
