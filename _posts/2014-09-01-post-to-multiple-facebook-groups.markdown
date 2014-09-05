@@ -77,6 +77,7 @@ function postToGroups() {
 
 And here is the full working example. First it will load and initialize the Facebook JavaScript SDK in your HTML page. After that you can call previous functions. Use your app ID where indicated.
 
+
 {% highlight html %}
 <!DOCTYPE html>
 <html>
@@ -245,4 +246,6 @@ And here is the full working example. First it will load and initialize the Face
 </html>
 {% endhighlight %}
 
-If you are facing any problem please share it with me below in comments or send me an email.
+You can also find this code in my [GitHub repository](https://github.com/gognjen/post-to-multiple-facebook-groups).
+
+If you are facing any problem please share it with me below in comments or send me an email. 
