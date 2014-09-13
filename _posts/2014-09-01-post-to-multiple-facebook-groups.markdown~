@@ -224,7 +224,7 @@ And here is the full working example. First it will load and initialize the Face
    the JavaScript SDK to present a graphical Login button that triggers
    the FB.login() function when clicked.
    -->
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+<fb:login-button scope="public_profile,email,user_groups,publish_actions" onlogin="checkLoginState();"></fb:login-button>
 <div id="status"></div>
 
 <label for="message">Message</label>
@@ -246,4 +246,6 @@ And here is the full working example. First it will load and initialize the Face
 </html>
 {% endhighlight %}
 
-If you are facing any problem please share it with me below in comments or send me an email. You can find the source code in my [GitHub repository](https://github.com/gognjen/post-to-multiple-facebook-groups).
+You can also find this code in my [GitHub repository](https://github.com/gognjen/post-to-multiple-facebook-groups).
+
+If you are facing any problem please share it with me below in comments or send me an email. 

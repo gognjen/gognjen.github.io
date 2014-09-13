@@ -121,7 +121,7 @@ And here is the full working example. First it will load and initialize the Face
 
     window.fbAsyncInit = function() {
         FB.init({
-            appId: '{your-app-id}',
+            appId: 'your-app-id',
             cookie: true, // enable cookies to allow the server to access 
             // the session
             xfbml: true, // parse social plugins on this page
@@ -224,7 +224,7 @@ And here is the full working example. First it will load and initialize the Face
    the JavaScript SDK to present a graphical Login button that triggers
    the FB.login() function when clicked.
    -->
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+<fb:login-button scope="public_profile,email,user_groups,publish_actions" onlogin="checkLoginState();"></fb:login-button>
 <div id="status"></div>
 
 <label for="message">Message</label>
