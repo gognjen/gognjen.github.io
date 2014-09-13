@@ -246,6 +246,6 @@ And here is the full working example. First it will load and initialize the Face
 </html>
 {% endhighlight %}
 
-You can also find this code in my [GitHub repository](https://github.com/gognjen/post-to-multiple-facebook-groups).
+You can also find this code in my [GitHub repository](https://github.com/gognjen/post-to-multiple-facebook-groups) and see it in action on [JSFiddle](http://jsfiddle.net/gognjen/jLrfad9v/).
 
 If you are facing any problem please share it with me below in comments or send me an email. 
