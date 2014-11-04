@@ -220,6 +220,8 @@ Total 22 (delta 6), reused 0 (delta 0)
 
 Visit your application
 
+![My helpful screenshot]({{ site.url }}/assets/images/getting-started-with-django-on-heroku.png)
+
 {% highlight bash %}
 $ python manage.py migrate
 {% endhighlight %}
