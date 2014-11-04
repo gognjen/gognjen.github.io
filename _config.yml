@@ -1,5 +1,5 @@
-markdown: rdiscount
-highligter: rouge
+markdown: redcarpet
+highligter: pygments
 safe: false
 
 
