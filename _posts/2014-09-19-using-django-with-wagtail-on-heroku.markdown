@@ -154,6 +154,7 @@ GitHub provides an excellent Python gitignore file that can be installed system-
 {% highlight bash %}
 venv
 *.pyc
+*.sqlite3
 staticfiles
 {% endhighlight %}
 
@@ -219,7 +220,26 @@ Total 22 (delta 6), reused 0 (delta 0)
 
 Visit your application
 
+{% highlight bash %}
+$ python manage.py migrate
+{% endhighlight %}
 
+{% highlight bash %}
+$ heroku run python manage.py migrate
+{% endhighlight %}
+
+{% highlight bash %}
+$ python manage.py createsuperuser
+{% endhighlight %}
+
+{% highlight bash %}
+$ heroku run python manage.py createsuperuser
+{% endhighlight %}
+
+
+{% highlight bash %}
+$ python manage.py runserver
+{% endhighlight %}
 
 
 
