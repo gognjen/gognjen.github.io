@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Make your own web scraping tool using Python and lxml
-date: 2014-09-01 17:23:01 
+date: 2014-11-02 17:23:01 
 disqus: true
 ---
 

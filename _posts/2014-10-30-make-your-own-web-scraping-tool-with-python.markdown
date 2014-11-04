@@ -5,7 +5,8 @@ date: 2014-11-02 17:23:01
 disqus: true
 ---
 
-In this post I'm going to explain how I made a simple web scraping tool with Python and lxml package library.
+In this post I'm going to explain how I made a simple web scraping tool with Python 
+and lxml toolkit.
 
 I was working on job board website and I wanted to make list of all jobs available in my city. There are few popular
 places on web where people from my area anounce their job offers. None of them have some kind of API or RSS feeds 
