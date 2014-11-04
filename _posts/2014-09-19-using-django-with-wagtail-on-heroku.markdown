@@ -47,11 +47,13 @@ From your virtualenv:
 
 {% highlight bash %}
 $ pip install django-toolbelt
-
-Installing collected packages: Django, psycopg2, gunicorn, dj-database-url, dj-static, static
-  ...
-Successfully installed Django psycopg2 gunicorn dj-database-url dj-static static
+... 
+Installing collected packages: django-toolbelt, django, psycopg2, gunicorn, dj-database-url, dj-static, static3
+  Running setup.py install for django-toolbelt
+... 
+Successfully installed django-toolbelt django psycopg2 gunicorn dj-database-url dj-static static3
 Cleaning up...
+
 {% endhighlight %}
 
 Now that we have a clean Python environment to work in, we’ll create our simple Django 
@@ -80,6 +82,19 @@ Pip has a nice command (pip freeze) that will generate this file for us:
 {% highlight bash %}
 $ pip freeze > requirements.txt
 {% endhighlight %}
+
+{% highlight bash %}
+Django==1.7.1
+argparse==1.2.1
+dj-database-url==0.3.0
+dj-static==0.0.6
+django-toolbelt==0.0.1
+gunicorn==19.1.1
+psycopg2==2.5.4
+static3==0.5.1
+wsgiref==0.1.2
+{% endhighlight %}
+
 
 Django settings
 
@@ -111,6 +126,10 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+{% endhighlight %}
+
+{% highlight bash %}
+$ mkdir static && touch static/.gitignore
 {% endhighlight %}
 
 With these settings available, you can add the following code to wsgi.py to serve static files in production:
@@ -147,15 +166,15 @@ $ git init
 Initialized empty Git repository in /Users/kreitz/hellodjango/.git/
 $ git add .
 $ git commit -m "my django app"
-[master (root-commit) 2943412] my django app
- 7 files changed, 230 insertions(+)
+[master (root-commit) bdf5bc4] my django app
+ 11 files changed, 149 insertions(+)
  create mode 100644 .gitignore
  create mode 100644 Procfile
- create mode 100644 hellodjango/__init__.py
- create mode 100644 hellodjango/settings.py
- create mode 100644 hellodjango/urls.py
- create mode 100644 hellodjango/wsgi.py
- create mode 100644 manage.py
+ create mode 100755 manage.py
+ create mode 100644 myproject/__init__.py
+ create mode 100644 myproject/settings.py
+ create mode 100644 myproject/urls.py
+ create mode 100644 myproject/wsgi.py
  create mode 100644 requirements.txt
 {% endhighlight %} 
  
@@ -165,8 +184,8 @@ The next step is to push the application’s repository to Heroku. First, we hav
 
 {% highlight bash %}
 $ heroku create
-Creating simple-spring-9999... done, stack is cedar
-http://simple-spring-9999.herokuapp.com/ | git@heroku.com:simple-spring-9999.git
+Creating morning-scrubland-3789... done, stack is cedar
+https://morning-scrubland-3789.herokuapp.com/ | git@heroku.com:morning-scrubland-3789.git
 Git remote heroku added
 {% endhighlight %}
 
@@ -174,33 +193,30 @@ This automatically added the Heroku remote for our app (git@heroku.com:simple-sp
 
 {% highlight bash %}
 $ git push heroku master
-Counting objects: 11, done.
+Initializing repository, done.
+Counting objects: 22, done.
 Delta compression using up to 4 threads.
-Compressing objects: 100% (9/9), done.
-Writing objects: 100% (11/11), 4.01 KiB, done.
-Total 11 (delta 0), reused 0 (delta 0)
------> Python app detected
------> No runtime.txt provided; assuming python-2.7.6.
------> Preparing Python runtime (python-2.7.6)
------> Installing Distribute (0.6.36)
------> Installing Pip (1.3.1)
------> Installing dependencies using Pip (1.3.1)
-       Downloading/unpacking Django==1.5 (from -r requirements.txt (line 1))
-       ...
-       Successfully installed Django psycopg2 gunicorn dj-database-url dj-static static
+Compressing objects: 100% (18/18), done.
+Writing objects: 100% (22/22), 3.32 KiB | 0 bytes/s, done.
+Total 22 (delta 6), reused 0 (delta 0)
+
+...
+         Running setup.py install for static3
+           
+           Installing static script to /app/.heroku/python/bin
+       Successfully installed Django argparse dj-database-url dj-static django-toolbelt gunicorn psycopg2 static3
        Cleaning up...
------> Collecting static files
-       0 static files copied.
+
+-----> Preparing static assets
+       Running collectstatic...
+       61 static files copied to '/app/staticfiles'.
 
 -----> Discovering process types
        Procfile declares types -> web
 
------> Compiled slug size is 29.5MB
------> Launching... done, v6
-       http://simple-spring-9999.herokuapp.com deployed to Heroku
-
-To git@heroku.com:simple-spring-9999.git
-* [new branch]      master -> master
+-----> Compressing... done, 35.4MB
+-----> Launching... done, v5
+       https://morning-scrubland-3789.herokuapp.com/ deployed to Heroku
 {% endhighlight %}
 
 Visit your application
