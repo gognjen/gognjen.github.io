@@ -16,7 +16,8 @@ I got jobs from posao.banjaluka.com.
 <figcaption></figcaption>
 
 First question is where to start with scraping. The easiest way for me to get all jobs was to find a link where I 
-have all jobs listed in paged list. After that I could loop through all pages and get jobs from each one. Here is a simple that do just that. 
+have all jobs listed in paged list. After that I could loop through all pages and get 
+jobs from each one. Here is a simple piece of code that do just that. 
 
 {% highlight python %}
 import urllib2
