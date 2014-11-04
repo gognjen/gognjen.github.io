@@ -8,5 +8,6 @@ logo: false
 paginate: 15
 
 # Details for the RSS feed generator
-url:            'http://0.0.0.0:4000/'
+url:            'http://gognjen.github.io'
+url:            'http://0.0.0.0:4000'
 author:         'Ognjen Glišić'

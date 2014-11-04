@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Post to Multiple Facebook Groups
+title: How to post in multiple Facebook groups in using Facebook JavaScript SDK and Graph API
 date: 2014-09-01 17:23:01 
 disqus: true
 ---
 
-I recently started a blog and I figured out that Facebook groups are one of the best places to promote my posts and quicky get some users to my site. If you have a lot of groups and you are already doing the same thing then you know that it takes a lot of time to post to all groups one by one. So I decided to make a simple script to do that in one click using Facebook Javascript SDK and Facebook Graph API.
+I recently started a blog and I figured out that Facebook groups are one of the best places to promote my posts and quicky get some users to my site. If you have a lot of groups and you are already doing the same thing then you know that it takes a lot of time to post to all groups one by one. So I decided to make a simple script to do that in one click using Facebook JavaScript SDK and Facebook Graph API.
 
 ![My helpful screenshot]({{ site.url }}/assets/images/post-to-multiple-facebook-groups.png)
 
@@ -14,7 +14,7 @@ I guess Facebook will temporary block you from posting to groups if you post to 
 
 Here is simple explanation of how it works.
 
-This function will load your groups into HTML drop-down list element that allows multiple selections.
+The <code>getMyGroups()</code> function will load your groups into HTML drop-down list element that allows multiple selections.
 
 {% highlight js %}
 function getMyGroups() {
@@ -33,7 +33,7 @@ function getMyGroups() {
 {% endhighlight %}
 
 
-After that you can call this function to post to selected groups. I put this delay variable to introduce a delay
+After that you can call <code>postToGroups()</code> function to post in selected groups. I put this delay variable to introduce a delay
 between two post requests. This may help you to avoid being banned from posting into groups by Facebook.
 
 {% highlight js %}

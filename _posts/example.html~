@@ -1,84 +1,3 @@
----
-layout: post
-title: How to post in multiple Facebook groups using Facebook JavaScript SDK and Graph API
-date: 2014-09-01 17:23:01 
-disqus: true
----
-
-I recently started a blog and I figured out that Facebook groups are one of the best places to promote my posts and quicky get some users to my site. If you have a lot of groups and you are already doing the same thing then you know that it takes a lot of time to post to all groups one by one. So I decided to make a simple script to do that in one click using Facebook JavaScript SDK and Facebook Graph API.
-
-![My helpful screenshot]({{ site.url }}/assets/images/post-to-multiple-facebook-groups.png)
-
-**Important!** Please don't use this code to spam your Facebook groups. You may be banned for spamming by group admins or temporary blocked by Facebook!
-I guess Facebook will temporary block you from posting to groups if you post to large number of groups in short period of time (I got restricted from posting and joining groups for two weeks while testing this). 
-
-Here is simple explanation of how it works.
-
-The <code>getMyGroups()</code> function will load your groups into HTML drop-down list element that allows multiple selections.
-
-{% highlight js %}
-function getMyGroups() {
-    FB.api('/me/groups', function(response) {
-        var groupList = document.getElementById('groups');
-        response.data.forEach(function(group) {
-            var opt = document.createElement("option");
-            opt.value = group.id;
-            opt.innerHTML = group.name;
-            groupList.appendChild(opt);
-        });
-    }, {
-        scope: 'user_groups,publish_actions'
-    });
-}
-{% endhighlight %}
-
-
-After that you can call <code>postToGroups()</code> function to post in selected groups. I put this delay variable to introduce a delay
-between two post requests. This may help you to avoid being banned from posting into groups by Facebook.
-
-{% highlight js %}
-function postToGroups() {
-    var groupList = document.getElementById('groups');
-
-    var selectedGroups = [];
-    for (var i = 0; i < groupList.length; i++) {
-        if (groupList[i].selected) {
-            selectedGroups.push(groupList[i].value);
-        }
-    }
-
-    var delay = parseInt(document.getElementById("delay").value, 10);
-
-    function postOrFinish() {
-        if (selectedGroups.length > 0) {
-            var groupId = selectedGroups.pop();
-            var message = document.getElementById("message").value;
-            var link = document.getElementById("link").value;
-            FB.api(
-                "/" + groupId + "/feed",
-                "POST", {
-                    "message": message,
-                    "link": link
-                },
-                function(response) {
-                    if (response.error) {
-                        console.log(response.error);
-                    }
-                    setTimeout(postOrFinish, delay * 1000);
-                });
-        } else {
-            alert('All done!');
-        }
-    }
-
-    postOrFinish();
-}
-{% endhighlight %}
-
-And here is the full working example. First it will load and initialize the Facebook JavaScript SDK in your HTML page. After that you can call previous functions. Use your app ID where indicated.
-
-
-{% highlight html %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -121,7 +40,7 @@ And here is the full working example. First it will load and initialize the Face
 
     window.fbAsyncInit = function() {
         FB.init({
-            appId: 'your-app-id',
+            appId: '{your-app-id}',
             cookie: true, // enable cookies to allow the server to access 
             // the session
             xfbml: true, // parse social plugins on this page
@@ -224,18 +143,19 @@ And here is the full working example. First it will load and initialize the Face
    the JavaScript SDK to present a graphical Login button that triggers
    the FB.login() function when clicked.
    -->
-<fb:login-button scope="public_profile,email,user_groups,publish_actions" onlogin="checkLoginState();"></fb:login-button>
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
 <div id="status"></div>
 
 <label for="message">Message</label>
+
 <textarea rows="3" placeholder="Type your message here." id="message"></textarea>
 
 <label for="link">Link</label>
 <input type="text" value="" id="link" placeholder="Your link goes here." />
 
-<button type="button" onclick="getMyGroups();">Load Groups</button>
 <label for="groups">Select your groups</label>
 <select multiple id="groups"></select>
+<button type="button" onclick="getMyGroups();">Load Groups</button>
 
 <label for="link">Delay (number of second between requests)</label>
 <input type="text" id="delay" />
@@ -244,8 +164,3 @@ And here is the full working example. First it will load and initialize the Face
 
 </body>
 </html>
-{% endhighlight %}
-
-You can also find this code in my [GitHub repository](https://github.com/gognjen/post-to-multiple-facebook-groups) and see it in action on [JSFiddle](http://jsfiddle.net/gognjen/jLrfad9v/).
-
-If you are facing any problem please share it with me below in comments or send me an email. 
