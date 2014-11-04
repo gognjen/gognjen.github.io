@@ -1,13 +1,15 @@
-name: Ognjen's Blog
-description: Coding, startups and ideas
-meta_description: "Your New Jekyll Site, Blogging about stuffs"
+markdown: rdiscount
+pygments: rouge
+safe: false
 
-markdown: redcarpet
-highligter: pygments
+
+description: "Coding, startups and ideas."
 logo: false
-paginate: 15
+meta_description: "Ognjen's Blog. Coding, startups and ideas."
 
+paginate: 15
 # Details for the RSS feed generator
-url:            'http://gognjen.github.io/'
-# url:            'http://0.0.0.0:4000'
+name:           Ognjen's Blog
+url:            'http://gognjen.github.io'
 author:         'Ognjen Glišić'
+rss_path: 		'/'
