@@ -1,0 +1,17 @@
+---
+layout: post
+title: Write your first Django app and deploy it on Heroku
+date: 2014-09-19 17:23:01 
+disqus: true
+---
+
+This quickstart will get you going with a Python/Django application that uses a Postgres database, deployed to Heroku. It's a version of tutorial described here. 
+
+Prerequisites
+
+ - The Heroku Toolbelt, as described in Getting Started with Python.
+ - Installed Python and Virtualenv in a unix-style environment. See this guide for guidance.
+ - An installed version of Postgres to test locally.
+ - A Heroku user account. Signup is free and instant.
+
+
