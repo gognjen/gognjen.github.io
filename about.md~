@@ -3,11 +3,7 @@ layout: page
 title: About me 
 ---
 
-<section class="author">
-                	<header> <a href="{{ site.baseurl }}"> <img class="profile" src="https://avatars2.githubusercontent.com/u/3964833?s=100" alt="Author's profile picture"></a></header>
-                	<article>
-                    	<p> 
-                    		I'm a freelance software developer, currently living in Banja Luka. I'm <a href="http://twitter.com/gognjen" target="_blank">@gognjen</a> on Twitter, and you can reach me at <a href="mailto:ognjen@outlook.com">ognjen@outlook.com</a>. You can hire me too. 
-                    	</p>
-                    </article>
-                </section> 
+I'm a freelance software developer, currently living in Banja Luka. I'm <a href="http://twitter.com/gognjen" target="_blank">@gognjen</a> on Twitter, and you can reach me at <a href="mailto:ognjen@outlook.com">ognjen@outlook.com</a>. 
+
+You can hire me too. 
+

@@ -1,417 +1,208 @@
 ---
 layout: post
-title: Using Django and Wagtail on Heroku
+title: Write your first Django app and deploy it on Heroku
 date: 2014-09-19 17:23:01 
 disqus: true
 ---
 
-This is a quick guide on how to build simple video gallery with Django using Wagtail CMS and deploy everything on Heroku.
-First thing I do for every project is to create a new virtual enviroment with virtualenvwrapper.
+This quickstart will get you going with a Python/Django application that uses a Postgres 
+database, deployed to Heroku. It's a version of tutorial described here. 
 
-mkvirtualenv demo
+Prerequisites
 
-After that install Django 1.6.2 with pip
+- The Heroku Toolbelt, as described in Getting Started with Python.
+- Installed Python and Virtualenv in a unix-style environment. See this guide for guidance.
+- A Heroku user account. Signup is free and instant.
 
-pip install Django==1.6.2
+Start a Django app inside a Virtualenv
 
-then you can install Wagtail package
+First, we’ll create an empty top-level directory for our project:
 
-pip install wagtail
+{% highlight bash %}
+$ mkdir hellodjango && cd hellodjango
+{% endhighlight %}
 
-Create new project with
+Next, we’ll create a Python Virtualenv:
 
-django-admin.py startproject demo
-cd demo
+{% highlight bash %}
+$ virtualenv venv
+New python executable in venv/bin/python
+Installing setuptools, pip...done.
+{% endhighlight %}
 
-Create a new app
+To use the new virtualenv, we need to activate it. (You must source the virtualenv environment for each terminal session where you wish to run your app.)
 
-django-admin.py startapp gallery
+{% highlight bash %}
+$ source venv/bin/activate
+{% endhighlight %}
 
-Open settings.py file and add some code:
+Next, install our application’s dependencies with pip. In this case, we will be installing django-toolbelt, which includes all of the packages we need:
 
+- Django (the web framework)
+- Gunicorn (WSGI server)
+- dj-database-url (a Django configuration helper)
+- dj-static (a Django static file server)
 
-INSTALLED_APPS = (
-  'django.contrib.auth',
-  'django.contrib.contenttypes',
-  'django.contrib.sessions',
-  'django.contrib.messages',
-  'django.contrib.staticfiles',
+From your virtualenv:
 
-  'south',
-  'compressor',
-  'taggit',
-  'modelcluster',
-  'django.contrib.admin',
+{% highlight bash %}
+$ pip install django-toolbelt
 
-  'wagtail.wagtailcore',
-  'wagtail.wagtailadmin',
-  'wagtail.wagtaildocs',
-  'wagtail.wagtailsnippets',
-  'wagtail.wagtailusers',
-  'wagtail.wagtailimages',
-  'wagtail.wagtailembeds',
-  'wagtail.wagtailsearch',
-  'wagtail.wagtailredirects',
-  'wagtail.wagtailforms',
+Installing collected packages: Django, psycopg2, gunicorn, dj-database-url, dj-static, static
+  ...
+Successfully installed Django psycopg2 gunicorn dj-database-url dj-static static
+Cleaning up...
+{% endhighlight %}
 
-  'myapp',  # your own app
-)
+Now that we have a clean Python environment to work in, we’ll create our simple Django 
+application.
 
+{% highlight bash %}
+ django-admin.py startproject hellodjango . 
+{% endhighlight %}
 
-Add this
+Declare process types with Procfile
 
-LOGIN_URL = 'wagtailadmin_login'
-LOGIN_REDIRECT_URL = 'wagtailadmin_home'
+Use a Procfile, a text file in the root directory of your application, to explicitly declare what command should be executed to start a web dyno. In this case, you need to execute Gunicorn with a few arguments.
+Here’s a Procfile for our new app. It should be called Procfile and live at the root directory of our project:
 
-And this to urls.py
+Procfile
 
-from django.conf.urls import patterns, include, url
-from django.conf.urls.static import static
-from django.views.generic.base import RedirectView
-from django.contrib import admin
-from django.conf import settings
-import os.path
+{% highlight bash %}
+web: gunicorn hellodjango.wsgi --log-file -
+{% endhighlight %}
 
-from wagtail.wagtailcore import urls as wagtail_urls
-from wagtail.wagtailadmin import urls as wagtailadmin_urls
-from wagtail.wagtaildocs import urls as wagtaildocs_urls
-from wagtail.wagtailsearch.urls import frontend as wagtailsearch_frontend_urls
+Specify dependencies with Pip
 
-admin.autodiscover()
+Heroku recognizes Python applications by the existence of a requirements.txt file in the root of a repository. This simple format is used by most Python projects to specify the external Python modules the application requires.
+Pip has a nice command (pip freeze) that will generate this file for us:
 
+{% highlight bash %}
+$ pip freeze > requirements.txt
+{% endhighlight %}
 
-# Signal handlers
-from wagtail.wagtailsearch import register_signal_handlers as wagtailsearch_register_signal_handlers
-wagtailsearch_register_signal_handlers()
+Django settings
+
+Next, configure the application for the Heroku environment, including Heroku’s Postgres database. The dj-database-url module will parse the value of the DATABASE_URL environment variable and convert them to something Django can understand.
 
 
-urlpatterns = patterns('',
-    url(r'^django-admin/', include(admin.site.urls)),
 
-    url(r'^admin/', include(wagtailadmin_urls)),
-    url(r'^search/', include(wagtailsearch_frontend_urls)),
-    url(r'^documents/', include(wagtaildocs_urls)),
+settings.py
 
-    # For anything not caught by a more specific rule above, hand over to
-    # Wagtail's serving mechanism
-    url(r'', include(wagtail_urls)),
-)
+{% highlight python %}
 
-Add this to bottom of your settings.py
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
 
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
 import os
-
-PROJECT_ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-
-MANAGERS = ADMINS
-
-# Default to dummy email backend. Configure dev/production/local backend
-# as per https://docs.djangoproject.com/en/dev/topics/email/#email-backends
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-
-
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
-
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-TIME_ZONE = 'Europe/London'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-gb'
-
-SITE_ID = 1
-
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale.
-# Note that with this set to True, Wagtail will fall back on using numeric dates
-# in date fields, as opposed to 'friendly' dates like "24 Sep 2013", because
-# Python's strptime doesn't support localised month names: https://code.djangoproject.com/ticket/13339
-USE_L10N = False
-
-# If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = True
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'change-me'
+{% endhighlight %}
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+With these settings available, you can add the following code to wsgi.py to serve static files in production:
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+wsgi.py
 
-    'wagtail.wagtailcore.middleware.SiteMiddleware',
-
-    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
-)
-
-from django.conf import global_settings
-TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
-    'django.core.context_processors.request',
-)
-
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    'south',
-    'compressor',
-    'taggit',
-    'modelcluster',
-    'django.contrib.admin',
-
-    'wagtail.wagtailcore',
-    'wagtail.wagtailadmin',
-    'wagtail.wagtaildocs',
-    'wagtail.wagtailsnippets',
-    'wagtail.wagtailusers',
-    'wagtail.wagtailimages',
-    'wagtail.wagtailembeds',
-    'wagtail.wagtailsearch',
-    'wagtail.wagtailredirects',
-    'wagtail.wagtailforms',
-
-    'gallery',
-)
-
-EMAIL_SUBJECT_PREFIX = '[Wagtail] '
-
-INTERNAL_IPS = ('127.0.0.1', '10.0.2.2')
-
-# django-compressor settings
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
-
-# Auth settings
-LOGIN_URL = 'wagtailadmin_login'
-LOGIN_REDIRECT_URL = 'wagtailadmin_home'
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
-
-
-# WAGTAIL SETTINGS
-
-# This is the human-readable name of your Wagtail install
-# which welcomes users upon login to the Wagtail admin.
-WAGTAIL_SITE_NAME = 'Video Gallery'
-
-# Override the search results template for wagtailsearch
-# WAGTAILSEARCH_RESULTS_TEMPLATE = 'myapp/search_results.html'
-# WAGTAILSEARCH_RESULTS_TEMPLATE_AJAX = 'myapp/includes/search_listing.html'
-
-# Replace the search backend
-#WAGTAILSEARCH_BACKENDS = {
-#  'default': {
-#    'BACKEND': 'wagtail.wagtailsearch.backends.elasticsearch.ElasticSearch',
-#    'INDEX': 'myapp'
-#  }
-#}
-
-# Wagtail email notifications from address
-# WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = 'wagtail@myhost.io'
-
-# If you want to use Embedly for embeds, supply a key
-# (this key doesn't work, get your own!)
-# EMBEDLY_KEY = '253e433d59dc4d2xa266e9e0de0cb830'
-
-
-After that do
-
-./manage.py syncdb
-
-./manage.py migrate
-
-Now we can create models for out gallary app
-
-
-from wagtail.wagtailcore.models import Page, Orderable
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel  ,MultiFieldPanel,InlinePanel, PageChooserPanel
-from modelcluster.fields import ParentalKey
-
-class BlogPage(Page):
-    body = RichTextField()
-    date = models.DateField("Post date")
-    indexed_fields = ('body', )
-    search_name = "Blog Page"
-
-BlogPage.content_panels = [
-    FieldPanel('title', classname="full title"),
-    FieldPanel('date'),
-    FieldPanel('body', classname="full"),
-]
-
-
-class LinkFields(models.Model):
-    link_page = models.ForeignKey(
-        'wagtailcore.Page',
-        null=True,
-        blank=True,
-        related_name='+'
-    )
-
-    panels = [
-        PageChooserPanel('link_page'),
-    ]
-
-    class Meta:
-        abstract = True
-
-class RelatedLink(LinkFields):
-    title = models.CharField(max_length=255, help_text="Link title")
-    panels = [
-        FieldPanel('title'),
-        MultiFieldPanel(LinkFields.panels, "Link"),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class BlogIndexPageRelatedLink(Orderable, RelatedLink):
-    page = ParentalKey('tutorial.BlogIndexPage', related_name='related_links')
-
-class BlogIndexPage(Page):
-    intro = models.CharField(max_length=256)
-    indexed_fields = ('body', )
-    search_name = "Blog Index Page"
-
-BlogIndexPage.content_panels = [
-    FieldPanel('title', classname="full title"),
-    FieldPanel('intro', classname="full"),
-    InlinePanel(BlogIndexPage, 'related_links', label="Related links"),
-]  
-
-
-
-Now install django-toolbelt
-
-pip install django-toolbelt
-
-
-Create Procfile with this content 
-
-web: gunicorn demo.wsgi --log-file -
-
-Create requirements.txt file
-
-pip freeze > requirements.txt
-
-Initialize git repos
-
-git init
-
-git add .
-
-git commit -m "my django app"
-
-Edit wsgi.py file 
+{% highlight python %}
 
 from django.core.wsgi import get_wsgi_application
 from dj_static import Cling
 
 application = Cling(get_wsgi_application())
 
+{% endhighlight %}
 
-Create heroku app
+Store your app in Git
 
-heroku create
+Now that we’ve written and tested our application, we need to store the project in a Git repository.
+Since our current directory contains a lof of extra files, we’ll want to configure our repository to ignore these files with a .gitignore file:
+GitHub provides an excellent Python gitignore file that can be installed system-wide.
 
-and then push to heroku
+.gitignore
 
-git push heroku master
+{% highlight bash %}
+venv
+*.pyc
+staticfiles
+{% endhighlight %}
 
-I got this error after that
+Next, we’ll create a new git repository and save our changes.
 
-heroku run python ./manage.py collectstatic --noinput
+{% highlight bash %}
+$ git init
+Initialized empty Git repository in /Users/kreitz/hellodjango/.git/
+$ git add .
+$ git commit -m "my django app"
+[master (root-commit) 2943412] my django app
+ 7 files changed, 230 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 Procfile
+ create mode 100644 hellodjango/__init__.py
+ create mode 100644 hellodjango/settings.py
+ create mode 100644 hellodjango/urls.py
+ create mode 100644 hellodjango/wsgi.py
+ create mode 100644 manage.py
+ create mode 100644 requirements.txt
+{% endhighlight %} 
+ 
+Deploy to Heroku
 
-Create static directory
+The next step is to push the application’s repository to Heroku. First, we have to get a place to push to from Heroku. We can do this with the heroku create command:
 
-heroku run mkdir static
+{% highlight bash %}
+$ heroku create
+Creating simple-spring-9999... done, stack is cedar
+http://simple-spring-9999.herokuapp.com/ | git@heroku.com:simple-spring-9999.git
+Git remote heroku added
+This automatically added the Heroku remote for our app (git@heroku.com:simple-spring-9999.git) to our repository. Now we can do a simple git push to deploy our application:
+$ git push heroku master
+Counting objects: 11, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (9/9), done.
+Writing objects: 100% (11/11), 4.01 KiB, done.
+Total 11 (delta 0), reused 0 (delta 0)
+-----> Python app detected
+-----> No runtime.txt provided; assuming python-2.7.6.
+-----> Preparing Python runtime (python-2.7.6)
+-----> Installing Distribute (0.6.36)
+-----> Installing Pip (1.3.1)
+-----> Installing dependencies using Pip (1.3.1)
+       Downloading/unpacking Django==1.5 (from -r requirements.txt (line 1))
+       ...
+       Successfully installed Django psycopg2 gunicorn dj-database-url dj-static static
+       Cleaning up...
+-----> Collecting static files
+       0 static files copied.
+
+-----> Discovering process types
+       Procfile declares types -> web
+
+-----> Compiled slug size is 29.5MB
+-----> Launching... done, v6
+       http://simple-spring-9999.herokuapp.com deployed to Heroku
+
+To git@heroku.com:simple-spring-9999.git
+* [new branch]      master -> master
+{% endhighlight %}
+
+Visit your application
+
+
+
+
 
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: How to post in multiple Facebook groups using Facebook JavaScript SDK and Graph API
+title: Post in multiple Facebook groups using Facebook JavaScript SDK and Graph API
 date: 2014-09-01 17:23:01 
 disqus: true
 ---
