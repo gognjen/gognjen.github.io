@@ -8,17 +8,16 @@ disqus: true
 In this post I'm going to explain how I made a simple web scraping tool with Python 
 and lxml toolkit.
 
-I was working on job board website and I wanted to make list of all jobs available in my city. There are few popular
-places on web where people from my area anounce their job offers. None of them have some kind of API or RSS feeds 
-available so I had to use web scraping tehnique to get that data on my site. Here I'm going to explaine how 
-I got jobs from posao.banjaluka.com. 
+I was working on job board website and I wanted to make list of all jobs available in 
+my city. There are few popular places on the Web where people from my area announce their 
+job offers. None of them has some kind of API or RSS feeds available so I had to use a
+Web scraping technique to get that data. 
 
-![My helpful screenshot]({{ site.url }}/assets/images/xpath-help.png)
-<figcaption></figcaption>
-
-First question is where to start with scraping. The easiest way for me to get all jobs was to find a link where I 
-have all jobs listed in paged list. After that I could loop through all pages and get 
-jobs from each one. Here is a simple piece of code that do just that. 
+The first step is to navigate to the pages with the data. This might require entering 
+some text into a search box (e.g., searching for a product on Amazon), or it might 
+require clicking “next” through all of the pages that results are split over (often 
+called pagination). In my case I had to handle pagination across multiple pages of 
+results. I parsed the starting page and fou Here is a simple piece of code that do just that. 
 
 {% highlight python %}
 import urllib2
@@ -42,23 +41,17 @@ while page_url:
     html_page = res.read().decode('utf-8')
     
     # Close response object.
-    res.close()              
+    res.close()
 
     # Parse page and return next page URL if exists.
     page_url = parse_page_and_return_next_page_url(html_page)
             
 {% endhighlight %}
 
-Here goes an interesting part of this story. In the next function I'm using lxml library 
-and XPath query language. You can also use CSS element selection language for this if you want.
+After I solved this, here comes the interesting part - extracting the data.
 
-XPath is a language for finding information in an XML document. XPath uses path 
-expressions to select nodes or node-sets in an XML document. These path expressions 
-look very much like the expressions you see when you work with a traditional computer 
-file system.
-
-This is how my HTML page structure looks like. I'm passing it as string argument to my
-function.
+This is HTML page structure that I'm passing as `html_page` argument to 
+`parse_page_and_return_next_page_url()` function.
 
 {% highlight html %}
 
@@ -111,7 +104,11 @@ function.
 </html>
 {% endhighlight %}
 
-And this is how my function looks like. 
+In `parse_page_and_return_next_page_url()` function I'm going to use lxml 
+library and XPath query language. You can also use CSS element selection language for 
+this if you want.
+
+And this is how my function looks like:
 
 {% highlight python %}
 from lxml import html
@@ -123,10 +120,7 @@ def parse_page_and_return_next_page_url(page):
 
     tree = html.fromstring(page)
               
-    """
-    This is one way go query data from my HTML page. Maybe it's
-    not the best one, but it works.
-    """
+    # This is one way go query data from my HTML page.
 
     titles = tree.xpath(
         '//*[@id="single-post"]/form/div/div/div/h3/a/text()'
@@ -151,15 +145,18 @@ def parse_page_and_return_next_page_url(page):
         '//*[contains(@class, 'job-nav')]/div[3]/a/@href'
     )
     
-    # Iterate through multiple lists and save Job object to database.
+    # Iterate through multiple lists.
     for title, link, location, employer, category, dates in zip(titles, external_links, locations, employers, categories, dates):
-        # Usign regular expression to get array of dates from string
-        # (ex., "Published: 29.10.2014. Expires: 13.11.2014.")
+        """
+        Using regular expression to get array of dates from string
+        My string looks like this: 
+            Publish date: 29.10.2014. Expiry date: 13.11.2014.
+        """
         parsed_dates = re.findall(r'\d{2}.\d{2}.\d{4}.', dates)
         # Date published is the first one
         publish_date = datetime.strptime(parsed_dates[0], "%d.%m.%Y.").date()
-        # Expire date is the second one
-        expire_date = datetime.strptime(parsed_dates[1], "%d.%m.%Y.").date()            
+        # Expiry date is the second one
+        expiry_date = datetime.strptime(parsed_dates[1], "%d.%m.%Y.").date()            
         
         # Do something with data       
         print(title)
@@ -167,7 +164,7 @@ def parse_page_and_return_next_page_url(page):
         print(link)
         print(employer)
         print(category)
-        print(expire_date)
+        print(expiry_date)
         print(publish_date)
                 
     return next_page_url 

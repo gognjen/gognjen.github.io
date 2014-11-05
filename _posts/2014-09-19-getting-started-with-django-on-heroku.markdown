@@ -5,8 +5,8 @@ date: 2014-09-19 17:23:01
 disqus: true
 ---
 
-This quickstart will get you going with a Python/Django application that uses a Postgres 
-database, deployed to Heroku. It's a version of tutorial described here. 
+This quickstart will get you going with a Python/Django application deployed to Heroku. 
+It's my version of official Heroku tutorial. 
 
 Prerequisites
 
@@ -222,26 +222,12 @@ Visit your application
 
 ![My helpful screenshot]({{ site.url }}/assets/images/getting-started-with-django-on-heroku.png)
 
-{% highlight bash %}
-$ python manage.py migrate
-{% endhighlight %}
-
-{% highlight bash %}
-$ heroku run python manage.py migrate
-{% endhighlight %}
-
-{% highlight bash %}
-$ python manage.py createsuperuser
-{% endhighlight %}
-
-{% highlight bash %}
-$ heroku run python manage.py createsuperuser
-{% endhighlight %}
 
 
-{% highlight bash %}
-$ python manage.py runserver
-{% endhighlight %}
+
+
+
+
 
 
 
